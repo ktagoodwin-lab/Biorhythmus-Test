@@ -197,7 +197,7 @@
 			answersHtml += `<button class="${cls}" onclick="answerQuestion(${a.points})">${a.text}</button>`;
 		});
 		content.innerHTML = `
-			<div class="meta"><div class="small">Frage ${currentQuestion+1} von ${total}</div><div class="small">Punkte: ${score}</div></div>
+			<div class="meta"><div class="small">Frage ${currentQuestion+1} von ${total}</div></div>
 			<div class="question">${q.question}</div>
 			<div class="answers">${answersHtml}</div>
 		`;
@@ -228,7 +228,6 @@
 		content.innerHTML = `
 			<div style="display:flex;align-items:center;gap:1rem"><div class="result-emoji">${emoji}</div><div>
 				<h2 style="margin:0">${result.title}</h2>
-				<div class="small">Punkte: ${score}</div>
 			</div></div>
 			<div class="result">${result.text}</div>
 			<div style="display:flex;gap:0.6rem;margin-top:1rem"><button class="restart-btn" onclick="restartQuiz()">Nochmal machen</button><button class="restart-btn" style="background:linear-gradient(90deg,#ffb86b,#ff7ab6)" onclick="shareResult()">Teilen</button></div>
