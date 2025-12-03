@@ -4,71 +4,85 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Tag- oder Nachtmensch? Der Biorhythmus-Test</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 	<style>
-		body {
-			font-family: Arial, sans-serif;
-			margin: 0;
-			padding: 0;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			min-height: 100vh;
+		:root{
+			--bg-1: #ffd7e2;
+			--bg-2: #e0f7ff;
+			--card: rgba(255,255,255,0.85);
+			--accent: #6b5bff;
+			--accent-2: #ff7ab6;
+			--muted: #5b6470;
 		}
-		.quiz-container {
-			background: #fff;
-			padding: 2rem 2.5rem;
-			width: 100%;
-            max-width: 600px;
+		html,body{
+			height:100%;
+			margin:0;
+			font-family: 'Poppins', Arial, sans-serif;
+			-webkit-font-smoothing:antialiased;
+			-moz-osx-font-smoothing:grayscale;
+			background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
+			display:flex;
+			align-items:center;
+			justify-content:center;
+			padding:2rem;
 		}
-		h1 {
-			color: #2c3e50;
-			margin-bottom: 0.5em;
+		.scene{
+			position:relative;
+			width:100%;
+			max-width:900px;
 		}
-		.intro {
-			margin-bottom: 2em;
-			color: #444;
+		.quiz-container{
+			background:var(--card);
+			border-radius:18px;
+			padding:2.25rem;
+			box-shadow: 0 12px 30px rgba(25,25,50,0.12);
+			backdrop-filter: blur(6px);
+			overflow:hidden;
+			position:relative;
 		}
-		.question {
-			font-weight: bold;
-			margin-bottom: 1em;
+		.logo{
+			display:flex;
+			align-items:center;
+			gap:0.75rem;
+			margin-bottom:0.75rem;
 		}
-		.answers {
-			margin-bottom: 2em;
+		.logo .emoji{
+			font-size:2rem;
+			transform:rotate(-8deg);
 		}
-		.answers button {
-			display: block;
-			width: 100%;
-			margin-bottom: 0.5em;
-			padding: 0.75em;
-			background: #eaf1fb;
-			border: none;
-			border-radius: 6px;
-			font-size: 1em;
-			cursor: pointer;
-			transition: background 0.2s;
-		}
-		.answers button:hover {
-			background: #d0e3fa;
-		}
-		.result {
-			font-size: 1.1em;
-			color: #222;
-			margin-top: 2em;
-		}
-		.restart-btn {
-			margin-top: 1.5em;
-			padding: 0.5em 1.5em;
-			background: #2c3e50;
-			color: #fff;
-			border: none;
-			border-radius: 6px;
-			cursor: pointer;
+		h1{font-size:1.4rem;margin:0;color:#222}
+		h3{margin:0;color:var(--muted);font-weight:500}
+		.intro{color:var(--muted);margin:1rem 0 1.5rem}
+		.progress-wrap{height:10px;background:rgba(0,0,0,0.06);border-radius:999px;overflow:hidden;margin-bottom:1rem}
+		.progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 350ms cubic-bezier(.2,.9,.2,1)}
+		.question{font-weight:600;font-size:1.05rem;margin:0 0 0.75rem}
+		.meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.9rem;margin-bottom:0.75rem}
+		.answers{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
+		.answers button{padding:0.9rem 0.8rem;border-radius:12px;border:none;background:linear-gradient(180deg,#fff,#f6f8ff);box-shadow:0 6px 14px rgba(100,90,255,0.08);cursor:pointer;font-weight:600;transition:transform .12s ease, box-shadow .12s ease}
+		.answers button:hover{transform:translateY(-4px);box-shadow:0 18px 30px rgba(100,90,255,0.12)}
+		.answers button.secondary{background:linear-gradient(180deg,#fff6fb,#fff0f6)}
+		.center{grid-column:1/-1}
+		.result{font-size:1rem;color:#222;margin-top:1rem;line-height:1.45}
+		.restart-btn{margin-top:1.25rem;padding:0.6rem 1.25rem;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:none;border-radius:12px;cursor:pointer;font-weight:700}
+		.small{font-size:0.85rem;color:var(--muted)}
+		/* playful background blobs */
+		.blob{position:absolute;border-radius:50%;filter:blur(28px);opacity:0.6}
+		.blob.b1{width:260px;height:260px;right:-60px;top:-90px;background:radial-gradient(circle at 30% 30%, #ffd1e3, #ff9dcc)}
+		.blob.b2{width:320px;height:320px;left:-120px;bottom:-100px;background:radial-gradient(circle at 70% 70%, #cfefff, #78d0ff)}
+		.result-emoji{font-size:3.2rem;margin:0.5rem 0}
+		@media (max-width:640px){
+			.answers{grid-template-columns:1fr}
+			.scene{padding:0 0.5rem}
 		}
 	</style>
 </head>
 <body>
-	<div class="quiz-container" id="quiz">
-		<!-- Quiz will be rendered here -->
+	<div class="scene">
+		<div class="blob b1" aria-hidden="true"></div>
+		<div class="blob b2" aria-hidden="true"></div>
+		<div class="quiz-container" id="quiz" role="application" aria-live="polite">
+			<!-- Quiz will be rendered here -->
+		</div>
 	</div>
 	<script>
 	const quizData = [
@@ -150,28 +164,50 @@
 	const quizEl = document.getElementById('quiz');
 	let currentQuestion = 0;
 	let score = 0;
+	const total = quizData.length;
 
-	function showIntro() {
+	function renderShell(){
 		quizEl.innerHTML = `
-			<h1>Tag- oder Nachtmensch?</h1>
-            <h3>Der Biorhythmus-Test</h3>
-			<div class="intro">
-				Kennen Sie das? Am Morgen kommen Sie kaum aus dem Bett und sind müde, dafür können Sie sich am Abend richtig gut konzentriert? Oder andersherum: Am Morgen stehen Sie gut gelaunt auf, sind aber abends richtig kaputt und wollen nur noch schlafen gehen? Vielleicht liegt es an Ihrem Biorhythmus, denn nicht alle Menschen sind zur gleichen Zeit besonders leistungsfähig. Machen Sie den Test und finden Sie heraus, wann Ihre Zeit für Höchstleistungen ist!
-			</div>
-			<button class="restart-btn" onclick="startQuiz()">Test starten</button>
+			<div class="logo"><div class="emoji">🦉</div><div>
+				<h1>Tag- oder Nachtmensch?</h1>
+				<h3>Der Biorhythmus-Test</h3>
+			</div></div>
+			<div class="progress-wrap"><div class="progress" id="progress"></div></div>
+			<div id="content"></div>
 		`;
 	}
 
+	function showIntro() {
+		renderShell();
+		const content = document.getElementById('content');
+		content.innerHTML = `
+			<div class="intro">Kennen Sie das? Am Morgen kommen Sie kaum aus dem Bett und sind müde, dafür können Sie sich am Abend richtig gut konzentriert? Oder andersherum: Am Morgen stehen Sie gut gelaunt auf, sind aber abends richtig kaputt und wollen nur noch schlafen gehen? Vielleicht liegt es an Ihrem Biorhythmus. Machen Sie den Test und finde heraus, wann du am besten performst!</div>
+			<div style="display:flex;gap:0.6rem;flex-wrap:wrap"><button class="restart-btn" onclick="startQuiz()">Test starten</button><button class="restart-btn" style="background:linear-gradient(90deg,#4dd0e1,#6b5bff)" onclick="location.reload()">Seite neu laden</button></div>
+		`;
+		updateProgress(0);
+	}
+
 	function showQuestion() {
+		renderShell();
 		const q = quizData[currentQuestion];
+		const content = document.getElementById('content');
 		let answersHtml = '';
 		q.answers.forEach((a, idx) => {
-			answersHtml += `<button onclick=\"answerQuestion(${a.points})\">${a.text}</button>`;
+			const cls = (q.answers.length === 2) ? 'center' : (idx === q.answers.length-1 ? '' : '');
+			answersHtml += `<button class="${cls}" onclick="answerQuestion(${a.points})">${a.text}</button>`;
 		});
-		quizEl.innerHTML = `
+		content.innerHTML = `
+			<div class="meta"><div class="small">Frage ${currentQuestion+1} von ${total}</div><div class="small">Punkte: ${score}</div></div>
 			<div class="question">${q.question}</div>
 			<div class="answers">${answersHtml}</div>
 		`;
+		updateProgress(currentQuestion);
+	}
+
+	function updateProgress(i){
+		const pct = Math.round((i/total)*100);
+		const prog = document.getElementById('progress');
+		if(prog) prog.style.width = pct + '%';
 	}
 
 	function answerQuestion(points) {
@@ -185,12 +221,55 @@
 	}
 
 	function showResult() {
-		let result = results.find(r => score >= r.min && score <= r.max);
-		quizEl.innerHTML = `
-			<h2>${result.title}</h2>
+		renderShell();
+		const content = document.getElementById('content');
+		let result = results.find(r => score >= r.min && score <= r.max) || results[1];
+		const emoji = result.title.includes('Früh') ? '🌞' : (result.title.includes('Nacht') ? '🌙' : '🕊️');
+		content.innerHTML = `
+			<div style="display:flex;align-items:center;gap:1rem"><div class="result-emoji">${emoji}</div><div>
+				<h2 style="margin:0">${result.title}</h2>
+				<div class="small">Punkte: ${score}</div>
+			</div></div>
 			<div class="result">${result.text}</div>
-			<button class="restart-btn" onclick="restartQuiz()">Nochmal machen</button>
+			<div style="display:flex;gap:0.6rem;margin-top:1rem"><button class="restart-btn" onclick="restartQuiz()">Nochmal machen</button><button class="restart-btn" style="background:linear-gradient(90deg,#ffb86b,#ff7ab6)" onclick="shareResult()">Teilen</button></div>
 		`;
+		updateProgress(total);
+		// little confetti-ish celebration
+		confettiBurst();
+	}
+
+	function confettiBurst(){
+		const burst = document.createElement('div');
+		burst.style.position='absolute';
+		burst.style.left='0';burst.style.top='0';burst.style.right='0';burst.style.bottom='0';burst.style.pointerEvents='none';
+		for(let i=0;i<18;i++){
+			const p = document.createElement('div');
+			p.textContent = ['✨','🎉','🎈','💫'][Math.floor(Math.random()*4)];
+			p.style.position='absolute';
+			p.style.left = (20+Math.random()*60)+'%';
+			p.style.top = (10+Math.random()*60)+'%';
+			p.style.fontSize = (12+Math.random()*24)+'px';
+			p.style.opacity='0';
+			p.style.transform='translateY(20px) rotate('+Math.floor(Math.random()*360)+'deg)';
+			p.style.transition='all 900ms ease-out';
+			burst.appendChild(p);
+			requestAnimationFrame(()=>{
+				p.style.opacity='1';
+				p.style.transform='translateY(-40px) rotate('+Math.floor(Math.random()*360)+'deg)';
+			});
+		}
+		document.querySelector('.quiz-container').appendChild(burst);
+		setTimeout(()=>burst.remove(),1100);
+	}
+
+	function shareResult(){
+		const result = results.find(r => score >= r.min && score <= r.max) || results[1];
+		const text = `Ich bin: ${result.title} (${score} Punkte) — Probier den Biorhythmus-Test!`;
+		if(navigator.share){
+			navigator.share({title:'Biorhythmus-Test',text});
+		} else {
+			navigator.clipboard.writeText(text).then(()=>alert('Ergebnis in die Zwischenablage kopiert!'));
+		}
 	}
 
 	function startQuiz() {
